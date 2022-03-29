@@ -102,10 +102,59 @@ public class ReadXmlDomParser {
 	private static InputStream readXmlFileIntoInputStream(final String fileName) {
 //		System.out.println(ReadXmlDomParser.class.getClassLoader().getSystemResource(fileName));
 //		System.out.println(ReadXmlDomParser.class.getClassLoader().getResource(fileName));
+		// getResource from "Resources"
 		System.out.println(ReadXmlDomParser.class.getClassLoader().getResourceAsStream(fileName));
 	
 		return ReadXmlDomParser.class.getClassLoader().getResourceAsStream(fileName);
 	}
+	
+	public String getAlexaRanking() {
+
+        String result = "undefined";
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+        try {
+
+        	
+
+            try (InputStream is = readXmlFileIntoInputStream("web.xml")) {
+
+                // unknown XML better turn on this
+                dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
+                DocumentBuilder dBuilder = dbf.newDocumentBuilder();
+                
+                Document doc = dBuilder.parse(is); // inputStream can not be null
+                
+                NodeList nodeList = null;
+                if(doc.hasChildNodes()) {
+                	nodeList = doc.getChildNodes();
+                }else {
+                	return null;
+                }
+                Element element = doc.getDocumentElement();
+
+                nodeList = element.getElementsByTagName("res-ref-name");
+                if (nodeList.getLength() > 0) {
+                	for(int i=0;i<nodeList.getLength();i++) {
+                		Node node = (Element) nodeList.item(i);
+                		String ranking = node.getTextContent();
+                		 if (!"".equals(ranking)) {
+                             result = ranking;
+                             LOGGER.info("catched");
+                         }
+                	}
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("web.xml db - "+result);
+
+        return result;
+    }
 	
 	public String readTest() {
 		InputStream is = ReadXmlDomParser.readXmlFileIntoInputStream("web.xml");

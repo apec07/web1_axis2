@@ -23,7 +23,7 @@ public class UserDAO implements UserImp{
 	public static StringBuffer str = new StringBuffer();
 	static {
 		ReadXmlDomParser readerXml = new ReadXmlDomParser();
-		str.append(readerXml.getStr());
+		str.append(readerXml.getAlexaRanking());
 		try {
 			javax.naming.Context ctx = new javax.naming.InitialContext();
 			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/TestMYSQL_AXIS2");
