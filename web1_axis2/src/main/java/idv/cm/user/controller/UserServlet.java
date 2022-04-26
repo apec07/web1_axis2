@@ -58,10 +58,11 @@ public class UserServlet extends HttpServlet {
 		PrintWriter out = res.getWriter();
 		LOGGER.info("user Servlet is called");
 		
-		String dbStr = (String) req.getServletContext().getAttribute("dbStr");
-		System.out.println("dbStr - "+dbStr);
-		LOGGER.info("dbStr - "+dbStr);
-		UserDAO user = new UserDAO(dbStr);
+		List<String> dbStrs = (List<String>) req.getServletContext().getAttribute("dbStr");
+		System.out.println("-------------user servlet call --------------");
+		dbStrs.forEach(p->System.out.println(p));
+		LOGGER.info("dbStr - "+dbStrs);
+		UserDAO user = new UserDAO(dbStrs.get(1));
 		LOGGER.info("user DAO is called");
 		List<UserVO> userList = user.getAllUser();
 		Iterator<UserVO> it = userList.iterator();

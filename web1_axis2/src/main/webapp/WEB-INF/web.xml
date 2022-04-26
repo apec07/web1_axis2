@@ -20,6 +20,13 @@ xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/
 		<res-auth>Container</res-auth>
   </resource-ref>
   
+    <resource-ref>
+		<description>DB Local</description>
+		<res-ref-name>jdbc/TestMYSQL_LOCAL</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+  </resource-ref>
+  
   <listener>
   	<listener-class>idv.cm.db.listener.DbFinder</listener-class>
   </listener>

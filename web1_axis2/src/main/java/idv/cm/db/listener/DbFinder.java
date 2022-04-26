@@ -5,6 +5,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -54,13 +57,16 @@ public class DbFinder implements ServletContextListener {
     	System.out.println("init DbFinder");
     	System.out.println(dbStr);
     	System.out.println("===========================");
-    	System.out.println(getDBPath(dbStr));
+    	if(getDBPath(dbStr).size()>0) {
+    		List<String> dbList = getDBPath(dbStr); 
+    		dbList.forEach(s -> System.out.println(s));
+    	}
        	ctx.setAttribute("dbStr", getDBPath(dbStr));
     }
     
-	private String getDBPath(String webPath) {
+	private LinkedList<String> getDBPath(String webPath) {
 
-        String result = "undefined";
+        LinkedList<String> result = new LinkedList<>();
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
@@ -89,7 +95,7 @@ public class DbFinder implements ServletContextListener {
                 		Node node = (Element) nodeList.item(i);
                 		String ranking = node.getTextContent();
                 		 if (!"".equals(ranking)) {
-                             result = ranking;
+                			 result.add(ranking);
                              LOGGER.info("catched");
                          }
                 	}
@@ -99,9 +105,7 @@ public class DbFinder implements ServletContextListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        LOGGER.info("readDB");
-        System.out.println("ReadXmlDomParser getDBPath Method");
-        System.out.println("web.xml db - "+result);
+        
 
         return result;
     }
