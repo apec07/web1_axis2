@@ -1,11 +1,19 @@
 package idv.cm.utli;
 
 import java.io.BufferedInputStream;
+
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.naming.Context;
 import javax.xml.XMLConstants;
@@ -22,9 +30,15 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+
+/*
+ *  Practice XML Reader (not used for this project
+ */
+
+
 public class ReadXmlDomParser {
 
-	public Logger LOGGER = LogManager.getLogger(this.getClass());
+	public static Logger LOGGER = LogManager.getLogger(ReadXmlDomParser.class);
 
 	public String getStr() {
 
@@ -103,12 +117,20 @@ public class ReadXmlDomParser {
 //		System.out.println(ReadXmlDomParser.class.getClassLoader().getSystemResource(fileName));
 //		System.out.println(ReadXmlDomParser.class.getClassLoader().getResource(fileName));
 		// getResource from "Resources"
-		System.out.println(ReadXmlDomParser.class.getClassLoader().getResourceAsStream(fileName));
-	
 		return ReadXmlDomParser.class.getClassLoader().getResourceAsStream(fileName);
+		
+	}
+	// read null but from where ?
+	private static URL readXmlFileIntoURI(final String fileName) {
+//		ReadXmlDomParser.class.getClassLoader();
+//		return ClassLoader.getSystemResource(fileName);
+		
+		return ReadXmlDomParser.class.getClassLoader().getResource(fileName);
 	}
 	
-	public String getAlexaRanking() {
+	
+	
+	public String getDBPath(String webPath) {
 
         String result = "undefined";
 
@@ -118,7 +140,7 @@ public class ReadXmlDomParser {
 
         	
 
-            try (InputStream is = readXmlFileIntoInputStream("web.xml")) {
+            try (InputStream is = readXmlFileIntoInputStream(webPath)) {
 
                 // unknown XML better turn on this
                 dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
@@ -151,6 +173,8 @@ public class ReadXmlDomParser {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        LOGGER.info("readDB");
+        System.out.println("ReadXmlDomParser getDBPath Method");
         System.out.println("web.xml db - "+result);
 
         return result;
@@ -158,6 +182,7 @@ public class ReadXmlDomParser {
 	
 	public String readTest() {
 		InputStream is = ReadXmlDomParser.readXmlFileIntoInputStream("web.xml");
+	
 		StringBuffer sb = new StringBuffer();
 		try {
 			if(is.available()>0) {
@@ -177,11 +202,36 @@ public class ReadXmlDomParser {
 		System.out.println("Test Finished!");
 		return sb.toString();
 	}
-	
-	public static void main(String[] arg) {
-		ReadXmlDomParser reader = new ReadXmlDomParser();
-		System.out.println(reader.getStr());
+	/*
+	public static void main(String[] arg) throws URISyntaxException, IOException {
+//		ReadXmlDomParser reader = new ReadXmlDomParser();
+		URL url = ReadXmlDomParser.readXmlFileIntoURI("web.xml");
+		if(url==null) {
+			return;
+		}
+		File file = new File(url.toURI());
+		if(file.list()==null) {
+			System.out.println("not found frin readXmlFileIntoURI ");
+		}else {
+		    List<String> list = Arrays.asList(file.list());
+		    list.forEach(p->System.out.println(p));
+		}
+		InputStream is = ReadXmlDomParser.readXmlFileIntoInputStream("web.xml");
+		if(is==null) {
+			return;
+		}
+		InputStreamReader isr = new InputStreamReader(is);
+		BufferedReader br = new BufferedReader(isr);
+		StringBuffer sb = new StringBuffer();
+		while(br.ready()) {
+			sb.append(br.readLine());
+			sb.append("\n");
+		}
+		System.out.println("Here is from readXmlFileIntoInputStream");
+		System.out.println(sb.toString());
+		
+//		System.out.println(reader.getStr());
 		
 	}
-
+*/
 }

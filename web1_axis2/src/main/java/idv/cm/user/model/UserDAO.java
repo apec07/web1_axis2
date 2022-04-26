@@ -9,24 +9,35 @@ import java.util.List;
 
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-
-import org.apache.catalina.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import idv.cm.utli.ReadXmlDomParser;
-
 public class UserDAO implements UserImp{
 	
-	private static DataSource ds = null;
+	private DataSource ds = null;
+	private javax.naming.Context ctx =null;
 	static Logger LOGGER = LogManager.getLogger(UserDAO.class);
-	public static StringBuffer str = new StringBuffer();
-	static {
-		ReadXmlDomParser readerXml = new ReadXmlDomParser();
-		str.append(readerXml.getAlexaRanking());
+	
+	//Static DB
+	public UserDAO() {
+		//default db url
+		LOGGER.info("Default DB = "+"jdbc/TestMYSQL_AXIS2");
 		try {
-			javax.naming.Context ctx = new javax.naming.InitialContext();
+			ctx = new javax.naming.InitialContext();
 			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/TestMYSQL_AXIS2");
+		} catch (NamingException e) {
+			LOGGER.error("no DataBase defined!\n"+e.getStackTrace());
+		}
+		
+	}
+	
+	//Dynamic DB 
+	public UserDAO(String dbStr) {
+		// custom db url
+		LOGGER.info("Given DB = "+dbStr);
+		try {
+			ctx = new javax.naming.InitialContext();
+			ds = (DataSource) ctx.lookup("java:comp/env/"+dbStr);
 		} catch (NamingException e) {
 			LOGGER.error("no DataBase defined!\n"+e.getStackTrace());
 		}
@@ -50,6 +61,10 @@ public class UserDAO implements UserImp{
 	public UserVO getOneUser(Integer user_no) {
 		Connection con = null;
 		UserVO user = new UserVO();
+		if(ds==null) {
+			LOGGER.error("Connection failed");
+			return null;
+		}
 		try {
 			con = ds.getConnection();
 			PreparedStatement psmt = con.prepareStatement(GET_ONE_STMT);
@@ -75,6 +90,10 @@ public class UserDAO implements UserImp{
 	public List<UserVO> getAllUser() {
 		Connection con = null;
 		List<UserVO> list = new LinkedList<>();
+		if(ds==null) {
+			LOGGER.error("Connection failed");
+			return null;
+		}
 		try {
 			con = ds.getConnection();
 			PreparedStatement psmt = con.prepareStatement(GET_ALL_STMT);
@@ -103,8 +122,5 @@ public class UserDAO implements UserImp{
 		return null;
 	}
 
-	static public StringBuffer getXml() {
-		return str;
-	}
 
 }

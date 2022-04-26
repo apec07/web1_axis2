@@ -29,9 +29,9 @@
 </TR>
 </c:forEach>
 
-	
-
 </TABLE>
+
+<HR>
 
 <H3>
 <%out.println(user_Svc.getOneUser(2)); %>
