@@ -1,4 +1,4 @@
-package idv.cm.mybuild;
+package rebuilding.day5;
 
 /**
  * 1. 建立一個final類別，不讓其他開發人遠可以繼承此類別，類別名稱則以建立的物件為開頭，並以Builder為後綴

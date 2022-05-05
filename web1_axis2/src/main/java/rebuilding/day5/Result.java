@@ -1,4 +1,4 @@
-package idv.cm.mybuild;
+package rebuilding.day5;
 
 public enum Result {
     RESOLVED, // 已解決

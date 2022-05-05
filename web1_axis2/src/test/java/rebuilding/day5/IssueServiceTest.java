@@ -1,6 +1,13 @@
-package idv.cm.mybuild;
+package rebuilding.day5;
 
 import org.junit.Test;
+
+import rebuilding.day5.Assignee;
+import rebuilding.day5.Closer;
+import rebuilding.day5.Creator;
+import rebuilding.day5.Issue;
+import rebuilding.day5.Result;
+import rebuilding.day5.State;
 
 /**
  * 1. 建立測試類別

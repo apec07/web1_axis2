@@ -1,13 +1,10 @@
 package idv.cm.db.listener;
 
-import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -23,7 +20,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import idv.cm.utli.ReadXmlDomParser;
 
 /**
  * Application Lifecycle Listener implementation class DbFinder
@@ -32,11 +28,12 @@ import idv.cm.utli.ReadXmlDomParser;
 public class DbFinder implements ServletContextListener {
 
 	public static String dbStr ;
-	public static Logger LOGGER = LogManager.getLogger(DbFinder.class);
+	public Logger LOGGER = LogManager.getLogger(this.getClass());
     /**
      * Default constructor. 
      */
     public DbFinder() {
+    	super();
         dbStr = new String();
     }
 
@@ -44,7 +41,9 @@ public class DbFinder implements ServletContextListener {
      * @see ServletContextListener#contextDestroyed(ServletContextEvent)
      */
     public void contextDestroyed(ServletContextEvent sce)  { 
-         // TODO Auto-generated method stub
+    	LOGGER.info("contextDestroyed called");
+    	ServletContext ctx = sce.getServletContext();
+    	ctx.removeAttribute("dbStr");
     }
 
 	/**
@@ -53,15 +52,19 @@ public class DbFinder implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce)  {
     	ServletContext ctx = sce.getServletContext();
     	String dbStr = ctx.getRealPath("/WEB-INF/web.xml");
-    	LOGGER.info("LOGGER Test");
-    	System.out.println("init DbFinder");
-    	System.out.println(dbStr);
-    	System.out.println("===========================");
+    	LOGGER.info("contextInitialized called");
+    	
+    	LOGGER.info("dbStr = "+dbStr);
+    	
     	if(getDBPath(dbStr).size()>0) {
+    		LOGGER.info("db size - "+getDBPath(dbStr).size());
     		List<String> dbList = getDBPath(dbStr); 
-    		dbList.forEach(s -> System.out.println(s));
+    		LOGGER.info(dbList.stream().map(Object::toString).collect(Collectors.joining(", ")));
+    		ctx.setAttribute("dbStr", getDBPath(dbStr));
+    	}else {
+    		LOGGER.warn("No DB Found!");
     	}
-       	ctx.setAttribute("dbStr", getDBPath(dbStr));
+       	
     }
     
 	private LinkedList<String> getDBPath(String webPath) {
@@ -96,7 +99,7 @@ public class DbFinder implements ServletContextListener {
                 		String ranking = node.getTextContent();
                 		 if (!"".equals(ranking)) {
                 			 result.add(ranking);
-                             LOGGER.info("catched");
+//                             LOGGER.info("catched - "+ranking);
                          }
                 	}
                 }
